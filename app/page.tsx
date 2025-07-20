@@ -7,6 +7,9 @@ export default async function Home() {
       <h1 className='text-4xl font-bold mb-8 font-[family-name:var(--font-geist-sans)] text-[#333333]'>
         My Todo App
       </h1>
+      <h1 className='text-4xl font-bold mb-8 font-[family-name:var(--font-geist-sans)] text-[#333333]'>
+        My Todo App
+      </h1>
       <ol className='list-decimal list-inside font-[family-name:var(--font-geist-sans)]'>
         {users.map((user) => (
           <li key={user.id} className='mb-2'>
