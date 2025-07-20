@@ -1,4 +1,4 @@
-import { PrismaClient, Prisma } from '@prisma/client';
+import { PrismaClient, Prisma, TaskStatus } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -10,14 +10,19 @@ const userData: Prisma.UserCreateInput[] = [
     tasks: {
       create: [
         {
-          title: 'Join the Prisma Discord',
-          description: 'Entre no servidor oficial do Prisma no Discord para interagir com a comunidade e receber atualizações.',
-          completed: true,
+          title: 'Estudar documentação do Prisma',
+          description: 'Revisar relações e migrations para melhorar o backend.',
+          status: TaskStatus.IN_PROGRESS,
         },
         {
-          title: 'Prisma on YouTube',
-          description: 'Assista aos vídeos tutoriais e novidades sobre Prisma no canal oficial do YouTube.',
-          // completed será false por padrão
+          title: 'Atualizar portfólio pessoal',
+          description: 'Adicionar novos projetos e melhorar a seção de contatos.',
+          status: TaskStatus.PENDING,
+        },
+        {
+          title: 'Configurar ambiente Docker',
+          description: 'Criar containers para Postgres e Redis em desenvolvimento.',
+          status: TaskStatus.COMPLETED,
         },
       ],
     },
@@ -29,9 +34,14 @@ const userData: Prisma.UserCreateInput[] = [
     tasks: {
       create: [
         {
-          title: 'Follow Prisma on Twitter',
-          description: 'Siga o perfil oficial do Prisma no Twitter para receber dicas e notícias em tempo real.',
-          completed: true,
+          title: 'Planejar cronograma de estudos',
+          description: 'Organizar as próximas 4 semanas de estudos de programação.',
+          status: TaskStatus.PENDING,
+        },
+        {
+          title: 'Finalizar design do aplicativo',
+          description: 'Concluir a interface do app no Figma e revisar com o time.',
+          status: TaskStatus.IN_PROGRESS,
         },
       ],
     },
@@ -39,11 +49,16 @@ const userData: Prisma.UserCreateInput[] = [
 ];
 
 export async function main() {
-  console.log('🌱 Seeding database...');
+  console.log('🌱 Limpando dados antigos...');
+  await prisma.task.deleteMany();
+  await prisma.user.deleteMany();
+
+  console.log('🌱 Inserindo novos dados...');
   for (const u of userData) {
     await prisma.user.create({ data: u });
   }
-  console.log('✅ Seed completed!');
+
+  console.log('✅ Seed finalizado!');
 }
 
 main()
