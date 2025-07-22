@@ -1,10 +1,11 @@
-import Form from 'next/form';
 import prisma from '@/lib/prisma';
 import { redirect, notFound } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 
-export default async function EditTask({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
+export const dynamic = 'force-dynamic'
+
+export default async function Task({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   const task = await prisma.task.findUnique({ where: { id: parseInt(id) } });
 
   if (!task) notFound();
@@ -13,11 +14,11 @@ export default async function EditTask({ params }: { params: Promise<{ id: strin
     'use server';
     const title = formData.get('title') as string;
     const description = formData.get('description') as string;
-    const completed = formData.get('completed') === 'on';
+    const userId = formData.get('userId') as string;
 
     await prisma.task.update({
       where: { id: parseInt(id) },
-      data: { title, description, completed },
+      data: { title, description, userId },
     });
 
     revalidatePath(`/tasks/${id}`);
@@ -25,14 +26,13 @@ export default async function EditTask({ params }: { params: Promise<{ id: strin
   }
 
   return (
-    <div className='min-h-screen bg-gray-50 flex items-center justify-center px-4 py-8'>
+    <div className='bg-gray-50 flex items-center justify-center'>
       <div className='w-full max-w-xl bg-white shadow-lg rounded-xl p-8'>
         <h1 className='text-3xl font-bold text-gray-800 mb-2'>Editar tarefa</h1>
         <p className='text-gray-600 mb-6'>
           Altere os campos abaixo e salve as alterações.
         </p>
-
-        <Form action={updateTask} className='space-y-6'>
+        <form action={updateTask} className='space-y-6'>
           <div>
             <label
               htmlFor='title'
@@ -48,7 +48,6 @@ export default async function EditTask({ params }: { params: Promise<{ id: strin
               className='w-full px-4 py-3 rounded-lg border border-gray-300 text-gray-800 placeholder-gray-600 focus:ring-2 focus:ring-indigo-400 focus:border-indigo-500 transition outline-none'
             />
           </div>
-
           <div>
             <label
               htmlFor='description'
@@ -64,27 +63,13 @@ export default async function EditTask({ params }: { params: Promise<{ id: strin
               className='w-full px-4 py-3 rounded-lg border border-gray-300 text-gray-800 placeholder-gray-600 focus:ring-2 focus:ring-indigo-400 focus:border-indigo-500 transition outline-none'
             />
           </div>
-
-          <div className='flex items-center gap-2'>
-            <input
-              type='checkbox'
-              id='completed'
-              name='completed'
-              defaultChecked={task.completed}
-              className='h-5 w-5 text-indigo-500 rounded focus:ring-indigo-400'
-            />
-            <label htmlFor='completed' className='text-gray-700'>
-              Tarefa finalizada?
-            </label>
-          </div>
-
           <button
             type='submit'
             className='w-full bg-green-500 text-white py-3 rounded-lg font-medium hover:bg-green-600 transition shadow-md hover:shadow-lg cursor-pointer'
           >
             Salvar alterações
           </button>
-        </Form>
+        </form>
       </div>
     </div>
   );

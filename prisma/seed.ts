@@ -1,61 +1,37 @@
-import { PrismaClient, Prisma, TaskStatus } from '@prisma/client';
+import { PrismaClient, TaskStatus } from '@prisma/client';
+import { faker } from '@faker-js/faker'; // gera dados aleatórios
 
 const prisma = new PrismaClient();
 
-const userData: Prisma.UserCreateInput[] = [
-  {
-    name: 'Lucas Rodrigues Cunha',
-    email: 'lucas@email.com',
-    password: 'lFn/w29.CPi8',
-    tasks: {
-      create: [
-        {
-          title: 'Estudar documentação do Prisma',
-          description: 'Revisar relações e migrations para melhorar o backend.',
-          status: TaskStatus.IN_PROGRESS,
-        },
-        {
-          title: 'Atualizar portfólio pessoal',
-          description: 'Adicionar novos projetos e melhorar a seção de contatos.',
-          status: TaskStatus.PENDING,
-        },
-        {
-          title: 'Configurar ambiente Docker',
-          description: 'Criar containers para Postgres e Redis em desenvolvimento.',
-          status: TaskStatus.COMPLETED,
-        },
-      ],
-    },
-  },
-  {
-    name: 'Maria Aparecida Rodrigues Cunha',
-    email: 'maria@email.com',
-    password: 'lFn/w29.CPi8',
-    tasks: {
-      create: [
-        {
-          title: 'Planejar cronograma de estudos',
-          description: 'Organizar as próximas 4 semanas de estudos de programação.',
-          status: TaskStatus.PENDING,
-        },
-        {
-          title: 'Finalizar design do aplicativo',
-          description: 'Concluir a interface do app no Figma e revisar com o time.',
-          status: TaskStatus.IN_PROGRESS,
-        },
-      ],
-    },
-  },
-];
-
-export async function main() {
+async function main() {
   console.log('🌱 Limpando dados antigos...');
   await prisma.task.deleteMany();
   await prisma.user.deleteMany();
 
-  console.log('🌱 Inserindo novos dados...');
-  for (const u of userData) {
-    await prisma.user.create({ data: u });
+  console.log('🌱 Criando usuários fictícios...');
+
+  // Cria 5 usuários com tarefas aleatórias
+  for (let i = 0; i < 5; i++) {
+    const user = await prisma.user.create({
+      data: {
+        name: faker.person.fullName(),
+        email: faker.internet.email(),
+        image: faker.image.avatar(),
+        tasks: {
+          create: Array.from({ length: faker.number.int({ min: 2, max: 5 }) }).map(() => ({
+            title: faker.lorem.sentence(),
+            description: faker.lorem.paragraph(),
+            status: faker.helpers.arrayElement([
+              TaskStatus.PENDING,
+              TaskStatus.IN_PROGRESS,
+              TaskStatus.COMPLETED,
+            ]),
+          })),
+        },
+      },
+    });
+
+    console.log(`✅ Usuário criado: ${user.name}`);
   }
 
   console.log('✅ Seed finalizado!');
