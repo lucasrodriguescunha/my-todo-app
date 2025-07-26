@@ -4,13 +4,17 @@ import Link from 'next/link'
 
 const poppins = Poppins({
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
+  weight: [
+    '400',
+    '500',
+    '600',
+    '700'
+  ],
   variable: '--font-poppins',
 })
 
 export const metadata: Metadata = {
-  title: 'Todo App | Minhas Tarefas',
-  description: 'Gerencie suas tarefas de forma organizada',
+  title: 'Todo App • Minhas Tarefas',
 }
 
 export default function TasksLayout({

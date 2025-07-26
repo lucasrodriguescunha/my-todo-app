@@ -21,8 +21,7 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: 'Login - Todo App',
-  description: 'Faça login no seu Todo App',
+  title: 'Login • Todo App',
 };
 
 export default function LoginLayout({

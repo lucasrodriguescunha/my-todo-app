@@ -1,3 +1,5 @@
+import { auth } from '@/auth'
+import { redirect } from 'next/navigation'
 import prisma from '@/lib/prisma'
 
 export const dynamic = 'force-dynamic'
